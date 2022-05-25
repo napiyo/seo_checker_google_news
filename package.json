@@ -1,0 +1,12 @@
+{
+    "name": "google_news_seo_index_checker",
+    "version": "1.0.0",
+    "description": "it checks that a website is indexed on google news or not",
+    "main": "index.js",
+    "scripts": {
+        "start": "node ./backEnd/server.js",
+        "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && npm install --prefix frontEnd && npm run build --prefix frontEnd && npm install --prefix backEnd "
+    },
+    "author": "Narendra Dewasi",
+    "license": "ISC"
+}
