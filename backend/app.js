@@ -8,9 +8,9 @@ app.use(express.json());
 app.use(cors())
 app.use('/api',indexingRouter)
 // middleware for error
-app.use(express.static(path.join(__dirname,"../frontEnd/build")));
+app.use(express.static(path.join(__dirname,"../frontend/build")));
 app.get("/*",(req,res)=>{
-    res.sendFile(path.resolve(__dirname,"../frontEnd/build/index.html"))
+    res.sendFile(path.resolve(__dirname,"../frontend/build/index.html"))
 })
 app.use(errorMiddleware);
 
