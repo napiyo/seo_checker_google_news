@@ -26,7 +26,7 @@ export default function DataTable({result,progressData,totalDomainsCount,StartFr
                 <hr style={{margin:'10px 0'}}/>
                 <p>we checked {progressData.checkedDomainsCount} out of {totalDomainsCount} domains in {Math.floor(progressData.timeElapsed/60)} min {progressData.timeElapsed%60} sec </p>
                  <p>Domains Indexed = {result.indexedCount} , Not indexed = {result.nonIndexedCount}
-                  , Error / unfinished : {progressData.checkedDomainsCount - result.indexedCount - result.nonIndexedCount }
+                  , Error / unfinished = {progressData.checkedDomainsCount - result.indexedCount - result.nonIndexedCount }
                  </p>       
         </div>
         <div className="dataTableBox">
