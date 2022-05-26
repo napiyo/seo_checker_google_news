@@ -5,11 +5,12 @@ exports.checkIndex = catchAsyncError(async(req,res,next)=>{
 
   
     
-    const domain = req.params.domain;
+    const {domain} = req.query;
+    
     if(!domain){
         return next(new ErrorHandler("domain can not be empty",404))
     }
-    const indexed = await googleNews({domain:domain});
+    const indexed = await googleNews(req.query);
         
     res.status(200).json({
         success:true,

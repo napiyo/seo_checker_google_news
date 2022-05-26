@@ -2,16 +2,35 @@
 
 import "./App.css";
 import Alert from "@mui/material/Alert";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import ProgressModal from "./components/ProgressModal";
 import DataTable from "./components/DataTable";
 import api from "./utils/ApiConfing";
+import { getCountries , getLanguages} from 'cldr-language-country';
+
+
 
 // import end
 
 // main App functional component
 function App() {
+
+
+  const [geoData, setgeoData] = useState({countries:[],languages:[]});
+  let initial_selectedGeoData = {country:{ code: 'US', name: 'United States' },
+  language:{ code: 'en', name: 'English', native: 'English' }};
+  const [selectedGeoData, setselectedGeoData] = useState({country:{ code: 'US', name: 'United States' },
+  language:{ code: 'en', name: 'English', native: 'English' }})
   useEffect(() => {
+
+
+    // get all countries and language
+    let temp_countries = getCountries();
+    let temp_languages = getLanguages();
+    setgeoData({countries:temp_countries,languages:temp_languages})
+    
+    // warning on reload
     const unloadCallback = (event) => {
       event.preventDefault();
       event.returnValue = "";
@@ -20,6 +39,9 @@ function App() {
   
     window.addEventListener("beforeunload", unloadCallback);
     return () => window.removeEventListener("beforeunload", unloadCallback);
+  
+    
+  
   }, []);
   // raw domain text - "abc.com \n def.com \n" and total domains count
   const [domains, setdomains] = useState({
@@ -153,7 +175,10 @@ function App() {
       // temp_results.push({ id: i + 1, domain: "tempDomain", indexed: "fsdafasdfasdfasdfasdfasdfasdfasdfasdfsdf" });
 
       // call api - response = {success:true ,domain:abc.com , indexed:true }
-      await api.get(`/api/checkIndexing/${domainArray[i]}`).then((res)=>{
+      await api.get(`/api/checkIndexing/`,{ params: { domain: domainArray[i],
+      cc:selectedGeoData.country.code,
+      lc:selectedGeoData.language.code
+      } }).then((res)=>{
           // put result data in temp_results array
         temp_results.push( { id: i+1, domain: res.data.domain, indexed: res.data.indexed })
            if(res.data.indexed){ temp_indexedCount++;}
@@ -242,8 +267,56 @@ efgsa.co.in`}
             value={domains.domainsData}
             onChange={(e) => updatedomains(e)}
           ></textarea>
-          <p className="helperText">total domains Entered: {domains.totalDomainsCount}</p>
+          
+            <p className="helperText">total domains Entered: {domains.totalDomainsCount}</p>
+          <div style={{width:'100%',display:'flex',justifyContent:'space-between',
+          columnGap:'25px',
+          alignItems:"center"}}>
 
+          <Autocomplete
+  disablePortal
+  id="country-box"
+  value={selectedGeoData.country}
+  onChange={(e,newValue)=>{
+    if(newValue){
+
+      setselectedGeoData((data)=>({...data,country:newValue}))
+    }
+    else{
+      setselectedGeoData((data)=>({...data,country:initial_selectedGeoData.country}))
+
+    }
+  }}
+  options={geoData.countries}
+  getOptionLabel={(option) => option.name}
+  sx={{ flex: 1 }}
+  size='small'
+  renderInput={(params) => <TextField {...params} label="Country" />}
+/>
+
+<Autocomplete
+  disablePortal
+  id="language-box"
+  options={geoData.languages}
+  getOptionLabel={(option) => option.name}
+  sx={{ flex: 1 }}
+  value={selectedGeoData.language}
+  onChange={(e,newValue)=>{
+    if(newValue){
+      setselectedGeoData((data)=>({...data,language:newValue}))
+      
+    }
+    else{
+      setselectedGeoData((data)=>({...data,language:initial_selectedGeoData.language}))
+
+    }
+  }
+}
+  size='small'
+  renderInput={(params) => <TextField {...params} label="language"/>}
+/>
+          </div>
+         
           {/* start analyse button  */}
           <button id="analyseBtn" onClick={analyse}>
             Analyse<span className="icon-right"></span>
