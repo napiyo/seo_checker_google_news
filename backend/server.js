@@ -8,9 +8,7 @@ const app = require('./app.js');
    
 });
 const PORT = process.env.PORT || 5125;
-const server = app.listen(PORT,()=>{
-    console.log(`server running on http://localhost:${PORT} `);
-})
+const server = app.listen(PORT)
  // unhandled promise Rejection
  process.on("unhandledRejection",(err) =>{
     console.log(`Error : ${err.message}`);

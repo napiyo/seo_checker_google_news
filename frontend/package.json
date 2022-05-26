@@ -13,6 +13,7 @@
         "@testing-library/user-event": "^13.5.0",
         "axios": "^0.27.2",
         "cldr-language-country": "^0.6.1",
+        "google_news_seo_index_checker": "file:..",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
         "react-scripts": "5.0.1",
