@@ -20,8 +20,8 @@ function App() {
   const [geoData, setgeoData] = useState({countries:[],languages:[]});
   let initial_selectedGeoData = {country:{ code: 'US', name: 'United States' },
   language:{ code: 'en', name: 'English', native: 'English' }};
-  const [selectedGeoData, setselectedGeoData] = useState({country:{ code: 'US', name: 'United States' },
-  language:{ code: 'en', name: 'English', native: 'English' }})
+  const [selectedGeoData, setselectedGeoData] = useState(initial_selectedGeoData)
+
   useEffect(() => {
 
 
@@ -55,11 +55,7 @@ function App() {
     msg: "this is error alert",
   });
 
-  async function wait(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  }
+
 
   // data for showing progress
   let initialProgressData = {
@@ -84,12 +80,12 @@ function App() {
 
   const analyse = async () => {
     // if domains are empty show alert
-    if (domains.domainsData.trim().length == 0) {
+    if ( !domains.domainsData || domains.domainsData.trim().length == 0) {
       // if already alert is shown- do nothing
+     
       if (alertData.show && alertData.msg == "domains names can not be empty") {
         return;
       }
-
       setalertData({ show: true, msg: "domains names can not be empty" });
       // hide alert in 3s
       setTimeout(() => {
@@ -174,10 +170,18 @@ function App() {
       // await wait(1000);
       // temp_results.push({ id: i + 1, domain: "tempDomain", indexed: "fsdafasdfasdfasdfasdfasdfasdfasdfasdfsdf" });
 
+      let temp_cc ="us"
+      let temp_lc = "en"
+      if(selectedGeoData.language){
+        temp_lc=selectedGeoData.language.code
+      }
+      if(selectedGeoData.country){
+        temp_cc=selectedGeoData.country.code
+      }
       // call api - response = {success:true ,domain:abc.com , indexed:true }
       await api.get(`/api/checkIndexing/`,{ params: { domain: domainArray[i],
-      cc:selectedGeoData.country.code,
-      lc:selectedGeoData.language.code
+      cc:temp_cc,
+      lc:temp_lc
       } }).then((res)=>{
           // put result data in temp_results array
         temp_results.push( { id: i+1, domain: res.data.domain, indexed: res.data.indexed })
@@ -278,14 +282,9 @@ efgsa.co.in`}
   id="country-box"
   value={selectedGeoData.country}
   onChange={(e,newValue)=>{
-    if(newValue){
 
       setselectedGeoData((data)=>({...data,country:newValue}))
-    }
-    else{
-      setselectedGeoData((data)=>({...data,country:initial_selectedGeoData.country}))
-
-    }
+   
   }}
   options={geoData.countries}
   getOptionLabel={(option) => option.name}
@@ -302,14 +301,7 @@ efgsa.co.in`}
   sx={{ flex: 1 }}
   value={selectedGeoData.language}
   onChange={(e,newValue)=>{
-    if(newValue){
       setselectedGeoData((data)=>({...data,language:newValue}))
-      
-    }
-    else{
-      setselectedGeoData((data)=>({...data,language:initial_selectedGeoData.language}))
-
-    }
   }
 }
   size='small'
@@ -327,6 +319,7 @@ efgsa.co.in`}
           {/* alert for empty domains  */}
           <div className="alertContainer">
             {alertData.show ? (
+        
               <Alert severity="error">{alertData.msg}</Alert>
             ) : (
               ""
